@@ -1,0 +1,88 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f2f5;
+    margin: 0;
+    padding: 20px;
+    color: #333;
+  }
+  
+  h1 { text-align: center; color: #1e293b; margin-bottom: 25px; }
+  
+  /* Dashboard Styles */
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    text-align: center;
+  }
+  
+  .status-badge {
+    display: inline-block;
+    padding: 6px 16px;
+    border-radius: 20px;
+    background: #cbd5e1;
+    font-weight: bold;
+    margin: 10px 0;
+    font-size: 0.9rem;
+  }
+  
+  .oee-val {
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 10px 0;
+  }
+  
+  .metrics {
+    text-align: left;
+    border-top: 1px solid #e2e8f0;
+    padding-top: 12px;
+    margin-top: 12px;
+    font-size: 0.95rem;
+  }
+  
+  .metrics p {
+    display: flex;
+    justify-content: space-between;
+    margin: 6px 0;
+  }
+  
+  /* Mobile Styles */
+  .mobile-body { max-width: 450px; margin: 0 auto; }
+  .button-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0; }
+  .btn {
+    padding: 14px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 1rem;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.1s;
+  }
+  .btn:active { transform: scale(0.98); }
+  .btn-green { background: #10b981; }
+  .btn-yellow { background: #f59e0b; }
+  .btn-red { background: #ef4444; }
+  .btn-gray { background: #64748b; }
+  .btn-blue { background: #3b82f6; width: 100%; margin-top: 10px; }
+  
+  .input-group { margin: 12px 0; text-align: left; }
+  .input-group label { display: block; font-weight: 600; margin-bottom: 5px; }
+  .input-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    box-sizing: border-box;
+    font-size: 1rem;
+  }

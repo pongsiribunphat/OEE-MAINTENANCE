@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>PROJECT PU - Keypad M2</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root[data-theme="dark"] {
+      --bg-gradient: linear-gradient(135deg, #0b0f19 0%, #111827 50%, #0b0f19 100%);
+      --bg-card: rgba(17, 24, 39, 0.8);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --border-color-hover: rgba(56, 189, 248, 0.3);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-accent: #38bdf8;
+      --shadow-color: rgba(0, 0, 0, 0.4);
+      --box-inner-bg: rgba(255, 255, 255, 0.03);
+    }
+
+    :root[data-theme="light"] {
+      --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%);
+      --bg-card: rgba(255, 255, 255, 0.88);
+      --border-color: rgba(0, 0, 0, 0.06);
+      --border-color-hover: rgba(37, 99, 235, 0.3);
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --text-accent: #0284c7;
+      --shadow-color: rgba(15, 23, 42, 0.08);
+      --box-inner-bg: #f8fafc;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', 'Kanit', sans-serif; transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease; }
+    body { min-height: 100vh; background: var(--bg-gradient); color: var(--text-main); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px 16px; }
+    .mobile-card { width: 100%; max-width: 440px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 28px; padding: 28px 22px; backdrop-filter: blur(20px); box-shadow: 0 20px 40px var(--shadow-color); position: relative; overflow: hidden; }
+    .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .btn-nav { background: var(--box-inner-bg); border: 1px solid var(--border-color); color: var(--text-main); padding: 8px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+    .btn-nav:hover { border-color: var(--border-color-hover); }
+    .header-info h2 { font-size: 1.4rem; font-weight: 800; margin-bottom: 4px; }
+    .header-info p { font-size: 0.8rem; color: var(--text-muted); }
+    .status-display-box { background: var(--box-inner-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 14px 18px; margin: 18px 0; display: flex; justify-content: space-between; align-items: center; }
+    .status-badge { padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 800; letter-spacing: 0.5px; background: rgba(148, 163, 184, 0.15); color: #94a3b8; }
+    
+    .keypad-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+    .btn-key { padding: 20px 8px; border-radius: 18px; border: 1px solid var(--border-color); color: #ffffff; font-size: 1.6rem; font-weight: 800; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 8px 16px var(--shadow-color); transition: all 0.15s ease; }
+    .btn-key:active { transform: scale(0.94); }
+    .key-subtext { font-size: 0.68rem; font-weight: 500; opacity: 0.9; margin-top: 4px; }
+    .key-1 { background: linear-gradient(135deg, #d97706, #f59e0b); }
+    .key-2 { background: linear-gradient(135deg, #2563eb, #3b82f6); }
+    .key-3 { background: linear-gradient(135deg, #0891b2, #06b6d4); }
+    .key-4, .key-5, .key-6 { background: linear-gradient(135deg, #059669, #10b981); }
+
+    .dice-container { background: var(--box-inner-bg); border: 1px dashed var(--border-color); border-radius: 20px; padding: 16px; text-align: center; margin-bottom: 20px; }
+    .dice-box { font-size: 3.5rem; display: inline-block; transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    .dice-rolling { animation: spinDice 0.6s ease-in-out infinite; }
+    @keyframes spinDice { 0% { transform: rotate(0deg) scale(0.8); } 50% { transform: rotate(180deg) scale(1.3); } 100% { transform: rotate(360deg) scale(0.8); } }
+    .dice-result-badge { font-size: 0.88rem; font-weight: 700; color: var(--text-accent); margin: 6px 0 12px 0; min-height: 24px; }
+    .btn-random { width: 100%; padding: 14px; background: linear-gradient(135deg, #4f46e5, #7c3aed); color: #ffffff; border: none; border-radius: 14px; font-weight: 700; font-size: 0.95rem; cursor: pointer; box-shadow: 0 8px 18px rgba(124, 58, 237, 0.35); transition: all 0.2s ease; }
+    .btn-random:hover { transform: translateY(-2px); box-shadow: 0 12px 24px rgba(124, 58, 237, 0.5); }
+    .btn-reset-machine { width: 100%; padding: 12px; background: rgba(239, 68, 68, 0.12); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.25); border-radius: 14px; font-weight: 700; font-size: 0.85rem; cursor: pointer; }
+    .btn-reset-machine:hover { background: #ef4444; color: white; }
+  </style>
+</head>
+<body>
+
+  <div class="mobile-card">
+    <div class="top-bar">
+      <a href="index.html" class="btn-nav">⬅️ กลับหน้าหลัก</a>
+      <button class="btn-nav" onclick="toggleTheme()">
+        <span id="themeIcon">☀️</span>
+        <span id="themeText">Light</span>
+      </button>
+    </div>
+
+    <div class="header-info">
+      <h2>⚙️ Machine 2 (M2)</h2>
+      <p>กำลังผลิตสูงสุด: <b>180 ชิ้น/ชั่วโมง</b></p>
+    </div>
+
+    <div class="status-display-box">
+      <div>
+        <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">สถานะเครื่องล่าสุด</div>
+        <div id="current-status" style="font-size: 1.1rem; font-weight: 800; margin-top: 2px;">STOP</div>
+      </div>
+      <div>
+        <span id="last-key-badge" class="status-badge">ปุ่มกด: -</span>
+      </div>
+    </div>
+
+    <div class="keypad-grid">
+      <button onclick="handleKey1Toggle()" class="btn-key key-1">
+        1
+        <span class="key-subtext">Setup / Breakdown</span>
+      </button>
+      <button onclick="handleKey(2, 'RUNNING', 60)" class="btn-key key-2">
+        2
+        <span class="key-subtext">ผลิต 60%</span>
+      </button>
+      <button onclick="handleKey(3, 'RUNNING', 70)" class="btn-key key-3">
+        3
+        <span class="key-subtext">ผลิต 70%</span>
+      </button>
+      <button onclick="handleKey(4, 'RUNNING', 80)" class="btn-key key-4">
+        4
+        <span class="key-subtext">ผลิต 80%</span>
+      </button>
+      <button onclick="handleKey(5, 'RUNNING', 80)" class="btn-key key-5">
+        5
+        <span class="key-subtext">ผลิต 80%</span>
+      </button>
+      <button onclick="handleKey(6, 'RUNNING', 80)" class="btn-key key-6">
+        6
+        <span class="key-subtext">ผลิต 80%</span>
+      </button>
+    </div>
+
+    <div class="dice-container">
+      <div id="diceIcon" class="dice-box">🎲</div>
+      <div id="diceResultBadge" class="dice-result-badge">กดปุ่มสุ่มเพื่อหมุนลูกเต๋า</div>
+      <button id="randomBtn" onclick="triggerRandomKeyWithDice()" class="btn-random">
+        🎲 สุ่มกดตัวเลข (Random 1-6)
+      </button>
+    </div>
+
+    <button onclick="resetMachineData()" class="btn-reset-machine">
+      🗑️ รีเซ็ตข้อมูลเครื่อง M2
+    </button>
+  </div>
+
+  <script type="module">
+    import { db, ref, push, remove, onValue } from './js/firebase-config.js';
+
+    const machineId = "M2";
+    const idealCapacity = 180;
+    const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbz_cfBGZbc64ECF3H77ZD1f95QF1RYkd2s5El5R55TKBScvtqz8hxJViwAY07cFpggK/exec"; 
+
+    let currentMachineStatus = "STOP";
+    let isRolling = false;
+    const diceFaces = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
+
+    const machineLogRef = ref(db, `logs/${machineId}`);
+    onValue(machineLogRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        const logsArray = Object.values(data).sort((a, b) => a.timestamp - b.timestamp);
+        const latestLog = logsArray[logsArray.length - 1];
+        if (latestLog) {
+          currentMachineStatus = latestLog.eventType;
+          document.getElementById('current-status').innerText = latestLog.perfRate ? `${latestLog.eventType} (${latestLog.perfRate}%)` : latestLog.eventType;
+          document.getElementById('last-key-badge').innerText = `ปุ่มกด: ${latestLog.keyPressed || '-'}`;
+        }
+      } else {
+        currentMachineStatus = "STOP";
+        document.getElementById('current-status').innerText = 'STOP';
+        document.getElementById('last-key-badge').innerText = 'ปุ่มกด: -';
+      }
+    });
+
+    function sendToGoogleSheets(keyPressed, eventType, perfRate) {
+      if (!GOOGLE_SHEET_URL || GOOGLE_SHEET_URL.includes("https://script.google.com/macros/s/AKfycbyLWrK2U7U9m.../exec")) return;
+
+      const actualOutput = eventType === 'RUNNING' ? Math.round(idealCapacity * (perfRate / 100)) : 0;
+
+      fetch(GOOGLE_SHEET_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          machineId: machineId,
+          keyPressed: keyPressed,
+          eventType: eventType,
+          perfRate: perfRate,
+          actualOutput: actualOutput,
+          targetOutput: idealCapacity
+        })
+      }).catch(err => console.error("Sheet Sync Error:", err));
+    }
+
+    window.handleKey = function(keyNum, eventType, perfRate) {
+      push(machineLogRef, {
+        timestamp: Date.now(),
+        keyPressed: keyNum,
+        eventType: eventType,
+        perfRate: perfRate
+      });
+      sendToGoogleSheets(keyNum, eventType, perfRate);
+    };
+
+    window.handleKey1Toggle = function() {
+      let eventType = currentMachineStatus !== 'SETUP' ? 'SETUP' : 'BREAKDOWN';
+
+      push(machineLogRef, {
+        timestamp: Date.now(),
+        keyPressed: 1,
+        eventType: eventType,
+        perfRate: 0
+      });
+      sendToGoogleSheets(1, eventType, 0);
+    };
+
+    window.triggerRandomKeyWithDice = function() {
+      if (isRolling) return;
+      isRolling = true;
+
+      const diceEl = document.getElementById('diceIcon');
+      const badgeEl = document.getElementById('diceResultBadge');
+      const btn = document.getElementById('randomBtn');
+
+      btn.disabled = true;
+      btn.style.opacity = '0.6';
+      diceEl.classList.add('dice-rolling');
+      badgeEl.innerText = '🎲 กำลังหมุนสุ่มตัวเลข...';
+
+      setTimeout(() => {
+        const randomNum = Math.floor(Math.random() * 6) + 1;
+        
+        diceEl.classList.remove('dice-rolling');
+        diceEl.innerText = diceFaces[randomNum - 1];
+        
+        diceEl.style.transform = 'scale(1.4)';
+        setTimeout(() => { diceEl.style.transform = 'scale(1)'; }, 200);
+
+        badgeEl.innerHTML = `✨ สุ่มได้เลข <b style="font-size: 1.2rem; color: var(--text-accent);">${randomNum}</b> !`;
+
+        if (randomNum === 1) {
+          handleKey1Toggle();
+        } else if (randomNum === 2) {
+          handleKey(2, 'RUNNING', 60);
+        } else if (randomNum === 3) {
+          handleKey(3, 'RUNNING', 70);
+        } else {
+          handleKey(randomNum, 'RUNNING', 80);
+        }
+
+        btn.disabled = false;
+        btn.style.opacity = '1';
+        isRolling = false;
+      }, 800);
+    };
+
+    window.resetMachineData = function() {
+      if (confirm(`คุณแน่ใจหรือไม่ว่าต้องการรีเซ็ตข้อมูลของ ${machineId}?`)) {
+        remove(machineLogRef)
+          .then(() => {
+            alert(`รีเซ็ตข้อมูลเครื่อง ${machineId} เรียบร้อยแล้ว!`);
+            document.getElementById('diceIcon').innerText = '🎲';
+            document.getElementById('diceResultBadge').innerText = 'กดปุ่มสุ่มเพื่อหมุนลูกเต๋า';
+          })
+          .catch((err) => alert('เกิดข้อผิดพลาด: ' + err.message));
+      }
+    };
+
+    window.toggleTheme = function() {
+      const htmlEl = document.documentElement;
+      const currentTheme = htmlEl.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      
+      htmlEl.setAttribute('data-theme', newTheme);
+      localStorage.setItem('pu_theme', newTheme);
+      updateThemeUI(newTheme);
+    };
+
+    function updateThemeUI(theme) {
+      const icon = document.getElementById('themeIcon');
+      const text = document.getElementById('themeText');
+      if (theme === 'dark') {
+        icon.innerText = '☀️';
+        text.innerText = 'Light';
+      } else {
+        icon.innerText = '🌙';
+        text.innerText = 'Dark';
+      }
+    }
+
+    const savedTheme = localStorage.getItem('pu_theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    updateThemeUI(savedTheme);
+  </script>
+</body>
+</html>
