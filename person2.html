@@ -163,21 +163,54 @@
     function sendToGoogleSheets(keyPressed, eventType, perfRate) {
       if (!GOOGLE_SHEET_URL || GOOGLE_SHEET_URL.includes("https://script.google.com/macros/s/AKfycbyLWrK2U7U9m.../exec")) return;
 
-      const actualOutput = eventType === 'RUNNING' ? Math.round(idealCapacity * (perfRate / 100)) : 0;
+      onValue(machineLogRef, (snapshot) => {
+        const data = snapshot.val();
+        if (!data) return;
 
-      fetch(GOOGLE_SHEET_URL, {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          machineId: machineId,
-          keyPressed: keyPressed,
-          eventType: eventType,
-          perfRate: perfRate,
-          actualOutput: actualOutput,
-          targetOutput: idealCapacity
-        })
-      }).catch(err => console.error("Sheet Sync Error:", err));
+        const logsArray = Object.values(data).sort((a, b) => a.timestamp - b.timestamp);
+        
+        let plannedHours = logsArray.length;
+        let operatingHours = 0;
+        let totalActualOutput = 0;
+        let totalIdealTarget = 0;
+
+        logsArray.forEach(log => {
+          if (log.eventType === 'RUNNING') {
+            operatingHours += 1;
+            const loadPercent = (log.perfRate || 0) / 100;
+            totalActualOutput += idealCapacity * loadPercent;
+            totalIdealTarget += idealCapacity;
+          }
+        });
+
+        const availability = plannedHours > 0 ? Number(((operatingHours / plannedHours) * 100).toFixed(1)) : 0;
+        
+        const latestLog = logsArray[logsArray.length - 1];
+        let performance = 0;
+        if (latestLog && latestLog.eventType === 'RUNNING') {
+          performance = totalIdealTarget > 0 ? Number(((totalActualOutput / totalIdealTarget) * 100).toFixed(1)) : 0;
+        }
+
+        const quality = 100;
+        const actualOutput = eventType === 'RUNNING' ? Math.round(idealCapacity * (perfRate / 100)) : 0;
+
+        fetch(GOOGLE_SHEET_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            machineId: machineId,
+            keyPressed: keyPressed,
+            eventType: eventType,
+            perfRate: perfRate,
+            actualOutput: actualOutput,
+            targetOutput: idealCapacity,
+            availability: availability,
+            performance: performance,
+            quality: quality
+          })
+        }).catch(err => console.error("Sheet Sync Error:", err));
+      }, { onlyOnce: true });
     }
 
     window.handleKey = function(keyNum, eventType, perfRate) {
