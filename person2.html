@@ -43,32 +43,112 @@
     .header-info h2 { font-size: 1.4rem; font-weight: 800; margin-bottom: 4px; }
     .header-info p { font-size: 0.8rem; color: var(--text-muted); }
 
+    /* =========================================================
+       🚨 HIGH-VISIBILITY & MOBILE-RESPONSIVE STATUS DISPLAY BOX
+       ========================================================= */
     .status-display-box {
       background: var(--box-inner-bg);
       border: 2px solid var(--border-color);
       border-radius: 20px;
-      padding: 18px 22px;
+      padding: 14px 16px; /* ปรับ Padding ให้กระชับขึ้นสำหรับจอมือถือ */
       margin: 18px 0 24px 0;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 10px; /* เพิ่มช่องว่างป้องกันข้อความชนกัน */
       transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
       box-shadow: 0 10px 25px var(--shadow-color);
     }
-    .status-label { font-size: 0.7rem; color: var(--text-muted); font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 6px; }
-    .status-value-wrapper { display: flex; align-items: center; gap: 10px; }
-    .status-dot { width: 12px; height: 12px; border-radius: 50%; background-color: #64748b; display: inline-block; box-shadow: 0 0 8px currentColor; transition: all 0.3s ease; }
-    #current-status { font-size: 1.75rem; font-weight: 900; letter-spacing: 0.5px; line-height: 1; transition: color 0.3s ease; }
-    .status-badge { padding: 8px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 800; letter-spacing: 0.5px; background: rgba(255, 255, 255, 0.08); color: var(--text-main); border: 1px solid var(--border-color); }
 
-    .status-box-running { background: rgba(16, 185, 129, 0.12) !important; border-color: rgba(16, 185, 129, 0.5) !important; box-shadow: 0 0 25px rgba(16, 185, 129, 0.25) !important; }
-    .status-box-running #current-status, .status-box-running .status-dot { color: #10b981; }
-    .status-box-setup { background: rgba(245, 158, 11, 0.12) !important; border-color: rgba(245, 158, 11, 0.5) !important; box-shadow: 0 0 25px rgba(245, 158, 11, 0.25) !important; }
-    .status-box-setup #current-status, .status-box-setup .status-dot { color: #f59e0b; }
-    .status-box-breakdown { background: rgba(239, 68, 68, 0.15) !important; border-color: rgba(239, 68, 68, 0.6) !important; box-shadow: 0 0 30px rgba(239, 68, 68, 0.35) !important; animation: alertPulse 1.5s infinite; }
-    .status-box-breakdown #current-status, .status-box-breakdown .status-dot { color: #ef4444; }
-    @keyframes alertPulse { 0%, 100% { border-color: rgba(239, 68, 68, 0.5); box-shadow: 0 0 20px rgba(239, 68, 68, 0.3); } 50% { border-color: rgba(239, 68, 68, 1); box-shadow: 0 0 35px rgba(239, 68, 68, 0.6); } }
+    .status-label {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
 
+    .status-value-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: #64748b;
+      display: inline-block;
+      flex-shrink: 0; /* ป้องกันจุดถูกบีบเบี้ยว */
+      box-shadow: 0 0 8px currentColor;
+      transition: all 0.3s ease;
+    }
+
+    #current-status {
+      font-size: clamp(1.05rem, 4.2vw, 1.55rem); /* ย่อ-ขยายขนาดฟอนต์อัตโนมัติตามจอมือถือ */
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+
+    .status-badge {
+      padding: 6px 12px;
+      border-radius: 16px;
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      white-space: nowrap; /* ป้องกันข้อความตกบรรทัด */
+      flex-shrink: 0; /* 🌟 ป้องกัน Badge ถูกบีบขาดครึ่ง */
+    }
+
+    /* ✨ dynamic glow ตามสถานะเครื่อง */
+    .status-box-running {
+      background: rgba(16, 185, 129, 0.12) !important;
+      border-color: rgba(16, 185, 129, 0.5) !important;
+      box-shadow: 0 0 25px rgba(16, 185, 129, 0.25) !important;
+    }
+    .status-box-running #current-status,
+    .status-box-running .status-dot { color: #10b981;  }
+
+    .status-box-setup {
+      background: rgba(245, 158, 11, 0.12) !important;
+      border-color: rgba(245, 158, 11, 0.5) !important;
+      box-shadow: 0 0 25px rgba(245, 158, 11, 0.25) !important;
+    }
+    .status-box-setup #current-status,
+    .status-box-setup .status-dot { color: #f59e0b;  }
+
+    .status-box-breakdown {
+      background: rgba(239, 68, 68, 0.15) !important;
+      border-color: rgba(239, 68, 68, 0.6) !important;
+      box-shadow: 0 0 30px rgba(239, 68, 68, 0.35) !important;
+      animation: alertPulse 1.5s infinite;
+    }
+    .status-box-breakdown #current-status,
+    .status-box-breakdown .status-dot { color: #ef4444;  }
+
+    @keyframes alertPulse {
+      0%, 100% { border-color: rgba(239, 68, 68, 0.5); box-shadow: 0 0 20px rgba(239, 68, 68, 0.3); }
+      50% { border-color: rgba(239, 68, 68, 1); box-shadow: 0 0 35px rgba(239, 68, 68, 0.6); }
+    }
+
+    /* 📱 รองรับหน้าจอมือถือขนาดเล็กเป็นพิเศษ (< 380px) */
+    @media (max-width: 380px) {
+      .status-display-box {
+        padding: 12px 12px;
+      }
+      .status-badge {
+        font-size: 0.72rem;
+        padding: 5px 10px;
+      }
+    }
     .keypad-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
     .btn-key { padding: 20px 8px; border-radius: 18px; border: 1px solid rgba(255, 255, 255, 0.15); color: #ffffff; font-size: 1.6rem; font-weight: 800; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 8px 18px var(--shadow-color); transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease, filter 0.2s ease, border-color 0.2s ease; position: relative; overflow: hidden; user-select: none; -webkit-tap-highlight-color: transparent; }
     .btn-key::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 40%; background: linear-gradient(180deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0) 100%); pointer-events: none; }
