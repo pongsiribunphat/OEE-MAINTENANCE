@@ -14,9 +14,6 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
-    /* =========================================================
-       🎨 LUXURY MINIMALIST PALETTE & THEMING
-       ========================================================= */
     :root[data-theme="dark"] {
       --bg-gradient: linear-gradient(135deg, #0b0f19 0%, #111827 50%, #0b0f19 100%);
       --bg-card: rgba(17, 24, 39, 0.75);
@@ -49,409 +46,112 @@
       --table-header-bg: #f1f5f9;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Plus Jakarta Sans', 'Kanit', sans-serif;
-      transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', 'Kanit', sans-serif; transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease; }
+    body { min-height: 100vh; background: var(--bg-gradient); color: var(--text-main); padding: 24px 16px 40px 16px; }
+    .container { max-width: 1140px; margin: 0 auto; }
 
-    body {
-      min-height: 100vh;
-      background: var(--bg-gradient);
-      color: var(--text-main);
-      padding: 24px 16px 40px 16px;
-    }
+    .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; flex-wrap: wrap; gap: 16px; }
+    .nav-buttons { display: flex; gap: 10px; align-items: center; }
+    .btn-nav { background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-main); padding: 10px 18px; border-radius: 30px; font-size: 0.88rem; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; backdrop-filter: blur(12px); box-shadow: 0 4px 15px var(--shadow-color); }
+    .btn-nav:hover { border-color: var(--border-color-hover); transform: translateY(-2px); }
+    .btn-reset { background: rgba(239, 68, 68, 0.12); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.25); }
+    .btn-reset:hover { background: #ef4444; color: #ffffff; border-color: #ef4444; }
 
-    .container {
-      max-width: 1140px;
-      margin: 0 auto;
-    }
+    .dash-header { text-align: center; margin-bottom: 32px; }
+    .dash-header .brand-tag { font-size: 0.75rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-accent); margin-bottom: 6px; display: inline-block; }
+    .dash-header h1 { font-size: clamp(1.8rem, 4vw, 2.5rem); font-weight: 800; letter-spacing: -0.5px; }
 
-    /* =========================================================
-       🎛️ HEADER & NAVIGATION
-       ========================================================= */
-    .top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 28px;
-      flex-wrap: wrap;
-      gap: 16px;
-    }
+    .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 32px; }
+    .card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 20px; padding: 24px; backdrop-filter: blur(16px); box-shadow: 0 10px 30px var(--shadow-color); position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; }
+    .card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--glass-gloss), transparent); }
+    .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+    .machine-title { font-size: 1.15rem; font-weight: 700; }
+    .capacity-tag { font-size: 0.75rem; color: var(--text-muted); font-weight: 500; }
+    .status-badge { padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
 
-    .nav-buttons {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
+    .oee-display { margin: 14px 0 10px 0; text-align: center; }
+    .oee-val { font-size: 2.5rem; font-weight: 800; line-height: 1; color: var(--text-main); letter-spacing: -1px; }
+    .oee-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; letter-spacing: 1px; margin-top: 4px; }
 
-    .btn-nav {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      color: var(--text-main);
-      padding: 10px 18px;
-      border-radius: 30px;
-      font-size: 0.88rem;
-      font-weight: 600;
-      cursor: pointer;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      backdrop-filter: blur(12px);
-      box-shadow: 0 4px 15px var(--shadow-color);
-    }
+    .output-box { background: var(--box-inner-bg); border: 1px solid var(--border-color); padding: 8px 12px; border-radius: 12px; font-size: 0.8rem; color: var(--text-muted); text-align: center; margin-bottom: 16px; }
+    .output-box b { color: var(--text-main); }
+    .metrics-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px; font-size: 0.85rem; }
+    .metric-item { display: flex; justify-content: space-between; color: var(--text-muted); }
+    .metric-item b { color: var(--text-main); font-weight: 700; }
 
-    .btn-nav:hover {
-      border-color: var(--border-color-hover);
-      transform: translateY(-2px);
-    }
+    .btn-detail { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--border-color); background: rgba(56, 189, 248, 0.1); color: var(--text-accent); font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .btn-detail:hover { background: var(--text-accent); color: #ffffff; border-color: var(--text-accent); transform: translateY(-2px); }
 
-    .btn-reset {
-      background: rgba(239, 68, 68, 0.12);
-      color: #ef4444;
-      border: 1px solid rgba(239, 68, 68, 0.25);
-    }
+    .chart-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 24px; padding: 28px; backdrop-filter: blur(16px); box-shadow: 0 10px 30px var(--shadow-color); margin-bottom: 24px; }
+    .chart-card h2 { font-size: 1.25rem; font-weight: 700; margin-bottom: 16px; }
+    .chart-container { position: relative; height: 340px; width: 100%; }
 
-    .btn-reset:hover {
-      background: #ef4444;
-      color: #ffffff;
-      border-color: #ef4444;
-    }
-
-    .dash-header {
-      text-align: center;
-      margin-bottom: 32px;
-    }
-
-    .dash-header .brand-tag {
-      font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--text-accent);
-      margin-bottom: 6px;
-      display: inline-block;
-    }
-
-    .dash-header h1 {
-      font-size: clamp(1.8rem, 4vw, 2.5rem);
-      font-weight: 800;
-      letter-spacing: -0.5px;
-    }
-
-    /* =========================================================
-       📐 DASHBOARD GRID & MACHINE CARDS
-       ========================================================= */
-    .dashboard-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
-      margin-bottom: 32px;
-    }
-
-    .card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: 20px;
-      padding: 24px;
-      backdrop-filter: blur(16px);
-      box-shadow: 0 10px 30px var(--shadow-color);
-      position: relative;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--glass-gloss), transparent);
-    }
-
-    .card-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 12px;
-    }
-
-    .machine-title {
-      font-size: 1.15rem;
-      font-weight: 700;
-    }
-
-    .capacity-tag {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      font-weight: 500;
-    }
-
-    .status-badge {
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .oee-display {
-      margin: 14px 0 10px 0;
-      text-align: center;
-    }
-
-    .oee-val {
-      font-size: 2.5rem;
-      font-weight: 800;
-      line-height: 1;
-      color: var(--text-main);
-      letter-spacing: -1px;
-    }
-
-    .oee-label {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      font-weight: 600;
-      letter-spacing: 1px;
-      margin-top: 4px;
-    }
-
-    .output-box {
-      background: var(--box-inner-bg);
-      border: 1px solid var(--border-color);
-      padding: 8px 12px;
-      border-radius: 12px;
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      text-align: center;
-      margin-bottom: 16px;
-    }
-
-    .output-box b {
-      color: var(--text-main);
-    }
-
-    .metrics-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-bottom: 18px;
-      font-size: 0.85rem;
-    }
-
-    .metric-item {
-      display: flex;
-      justify-content: space-between;
-      color: var(--text-muted);
-    }
-
-    .metric-item b {
-      color: var(--text-main);
-      font-weight: 700;
-    }
-
-    .btn-detail {
-      width: 100%;
-      padding: 12px;
-      border-radius: 12px;
-      border: 1px solid var(--border-color);
-      background: rgba(56, 189, 248, 0.1);
-      color: var(--text-accent);
-      font-weight: 700;
-      font-size: 0.85rem;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-    }
-
-    .btn-detail:hover {
-      background: var(--text-accent);
-      color: #ffffff;
-      border-color: var(--text-accent);
-      transform: translateY(-2px);
-    }
-
-    /* =========================================================
-       📈 CHART SECTION
-       ========================================================= */
-    .chart-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: 24px;
-      padding: 28px;
-      backdrop-filter: blur(16px);
-      box-shadow: 0 10px 30px var(--shadow-color);
-      margin-bottom: 24px;
-    }
-
-    .chart-card h2 {
-      font-size: 1.25rem;
-      font-weight: 700;
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .chart-container {
-      position: relative;
-      height: 340px;
-      width: 100%;
-    }
-
-    /* =========================================================
-       🪟 LUXURY MODAL POP-UP
-       ========================================================= */
-    .modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(11, 15, 25, 0.75);
-      backdrop-filter: blur(8px);
-      z-index: 100;
-      overflow-y: auto;
-      padding: 20px 16px;
-    }
-
-    .modal-content {
-      background: var(--bg-modal);
-      border: 1px solid var(--border-color);
-      border-radius: 24px;
-      max-width: 880px;
-      margin: 40px auto;
-      padding: 32px;
-      box-shadow: 0 25px 50px -12px var(--shadow-color);
-      animation: modalFadeIn 0.25s ease-out;
-    }
-
-    @keyframes modalFadeIn {
-      from { opacity: 0; transform: translateY(-12px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .close-btn {
-      color: var(--text-muted);
-      float: right;
-      font-size: 28px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: color 0.15s;
-    }
-
+    .modal { display: none; position: fixed; inset: 0; width: 100%; height: 100%; background: rgba(11, 15, 25, 0.75); backdrop-filter: blur(8px); z-index: 100; overflow-y: auto; padding: 20px 16px; }
+    .modal-content { background: var(--bg-modal); border: 1px solid var(--border-color); border-radius: 24px; max-width: 880px; margin: 40px auto; padding: 32px; box-shadow: 0 25px 50px -12px var(--shadow-color); animation: modalFadeIn 0.25s ease-out; }
+    @keyframes modalFadeIn { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: translateY(0); } }
+    .close-btn { color: var(--text-muted); float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
     .close-btn:hover { color: var(--text-main); }
 
-    .kpi-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-      margin: 16px 0;
-    }
-
-    .kpi-card {
-      background: var(--box-inner-bg);
-      padding: 14px 10px;
-      border-radius: 14px;
-      border: 1px solid var(--border-color);
-      text-align: center;
-    }
-
+    .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 16px 0; }
+    .kpi-card { background: var(--box-inner-bg); padding: 14px 10px; border-radius: 14px; border: 1px solid var(--border-color); text-align: center; }
     .kpi-title { font-size: 0.7rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
     .kpi-value { font-size: 1.35rem; font-weight: 800; color: var(--text-main); margin-top: 4px; }
 
-    .modal-chart-box {
-      position: relative;
-      height: 220px;
-      width: 100%;
-      margin: 16px 0 24px 0;
-      padding: 12px;
-      background: var(--box-inner-bg);
-      border-radius: 16px;
-      border: 1px solid var(--border-color);
-    }
-
-    .log-table-container {
-      max-height: 240px;
-      overflow-y: auto;
-      border-radius: 12px;
-      border: 1px solid var(--border-color);
-    }
-
-    .log-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.82rem;
-    }
-
-    .log-table th {
-      position: sticky;
-      top: 0;
-      background: var(--table-header-bg);
-      color: var(--text-main);
-      font-weight: 700;
-      padding: 10px 8px;
-      text-align: center;
-      border-bottom: 1px solid var(--border-color);
-      white-space: nowrap;
-    }
-
-    .log-table td {
-      border-bottom: 1px solid var(--border-color);
-      padding: 10px 8px;
-      text-align: center;
-      color: var(--text-muted);
-      white-space: nowrap;
-    }
-
-    .event-tag {
-      padding: 3px 8px;
-      border-radius: 6px;
-      font-size: 0.75rem;
-      font-weight: 700;
-    }
+    .modal-chart-box { position: relative; height: 220px; width: 100%; margin: 12px 0 24px 0; padding: 12px; background: var(--box-inner-bg); border-radius: 16px; border: 1px solid var(--border-color); }
+    .log-table-container { max-height: 260px; overflow-y: auto; border-radius: 12px; border: 1px solid var(--border-color); }
+    .log-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+    .log-table th { position: sticky; top: 0; background: var(--table-header-bg); color: var(--text-main); font-weight: 700; padding: 10px 8px; text-align: center; border-bottom: 1px solid var(--border-color); white-space: nowrap; }
+    .log-table td { border-bottom: 1px solid var(--border-color); padding: 10px 8px; text-align: center; color: var(--text-muted); white-space: nowrap; }
+    .event-tag { padding: 3px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; }
     .tag-running { background: rgba(16, 185, 129, 0.15); color: #10b981; }
     .tag-setup { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
     .tag-breakdown { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
 
-    @media (max-width: 640px) {
-      .kpi-grid { grid-template-columns: repeat(2, 1fr); }
-      .modal-content { padding: 20px; }
-      .chart-card { padding: 20px; }
-    }
+    /* Control Filter Style */
+    .filter-box { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin: 12px 0 16px 0; background: var(--box-inner-bg); padding: 12px 16px; border-radius: 12px; border: 1px solid var(--border-color); }
+    .filter-input { width: 75px; padding: 6px 10px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-main); text-align: center; font-weight: 600; }
+    .btn-filter { padding: 6px 14px; border-radius: 8px; border: none; background: #38bdf8; color: #ffffff; font-weight: 700; cursor: pointer; font-size: 0.8rem; transition: background 0.2s; }
+    .btn-filter:hover { background: #0284c7; }
+    .btn-filter-reset { padding: 6px 14px; border-radius: 8px; border: 1px solid var(--border-color); background: transparent; color: var(--text-muted); font-weight: 600; cursor: pointer; font-size: 0.8rem; }
+    .btn-filter-reset:hover { border-color: var(--text-main); color: var(--text-main); }
+
+    @media (max-width: 640px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } .modal-content { padding: 20px; } }
   </style>
 </head>
 <body>
 
   <div class="container">
-    <!-- Top Bar Navigation -->
     <div class="top-bar">
       <div class="nav-buttons">
         <a href="index.html" class="btn-nav">🏠 กลับหน้าหลัก</a>
-        <button onclick="resetAllData()" class="btn-nav btn-reset">🗑️ รีเซ็ตข้อมูลทั้งหมด</button>
+        <button onclick="resetAllData()" class="btn-nav btn-reset">🗑 รีเซ็ตข้อมูลทั้งหมด</button>
       </div>
 
       <button class="btn-nav" onclick="toggleTheme()">
-        <span id="themeIcon">☀️</span>
+        <span id="themeIcon">☀</span>
         <span id="themeText">Light Mode</span>
       </button>
     </div>
 
-    <!-- Header Title -->
     <header class="dash-header">
       <span class="brand-tag">Real-time Analytics</span>
       <h1>OEE Monitoring Dashboard</h1>
     </header>
+
+    <!-- 🎛️ ช่องกรองช่วงชั่วโมง (เชื่อมทั้ง 4 การ์ดหลัก และทั้ง 2 กราฟหน้าหลัก) -->
+    <div class="filter-box" style="margin-bottom: 24px;">
+      <span style="font-size: 0.88rem; font-weight: 700; color: var(--text-accent);">⏱️ กรองช่วงชั่วโมงการทำงาน (หน้าหลัก):</span>
+      <div style="display: flex; align-items: center; gap: 6px;">
+        <label style="font-size: 0.82rem; color: var(--text-muted);">เริ่มชั่วโมงที่:</label>
+        <input type="number" id="mainFilterStartHour" class="filter-input" min="1" placeholder="1">
+      </div>
+      <div style="display: flex; align-items: center; gap: 6px;">
+        <label style="font-size: 0.82rem; color: var(--text-muted);">ถึงชั่วโมงที่:</label>
+        <input type="number" id="mainFilterEndHour" class="filter-input" min="1" placeholder="60">
+      </div>
+      <button onclick="applyMainHourFilter()" class="btn-filter">🔍 กรองข้อมูลหน้าหลัก</button>
+      <button onclick="resetMainHourFilter()" class="btn-filter-reset">🔄 แสดงข้อมูลทั้งหมด</button>
+    </div>
 
     <!-- 4 Machine KPI Cards -->
     <div class="dashboard-grid">
@@ -467,14 +167,12 @@
           </div>
           <div class="oee-display">
             <div class="oee-val" id="oee-M1">0%</div>
-            <div class="oee-label">OEE Efficiency</div>
+            <div class="oee-label">Average OEE</div>
           </div>
-          <div class="output-box">
-            📦 ผลิตจริง/เป้าหมาย: <b id="pcs-M1">0 / 0</b> ชิ้น
-          </div>
+          <div class="output-box">📦 ผลิตจริง/เป้าหมาย: <b id="pcs-M1">0 / 0</b> ชิ้น</div>
           <div class="metrics-list">
-            <div class="metric-item"><span>Availability (A)</span><b id="a-M1">0%</b></div>
-            <div class="metric-item"><span>Performance (P)</span><b id="p-M1">0%</b></div>
+            <div class="metric-item"><span>Avg Availability (A)</span><b id="a-M1">0%</b></div>
+            <div class="metric-item"><span>Avg Performance (P)</span><b id="p-M1">0%</b></div>
             <div class="metric-item"><span>Quality (Q)</span><b id="q-M1">100%</b></div>
           </div>
         </div>
@@ -493,14 +191,12 @@
           </div>
           <div class="oee-display">
             <div class="oee-val" id="oee-M2">0%</div>
-            <div class="oee-label">OEE Efficiency</div>
+            <div class="oee-label">Average OEE</div>
           </div>
-          <div class="output-box">
-            📦 ผลิตจริง/เป้าหมาย: <b id="pcs-M2">0 / 0</b> ชิ้น
-          </div>
+          <div class="output-box">📦 ผลิตจริง/เป้าหมาย: <b id="pcs-M2">0 / 0</b> ชิ้น</div>
           <div class="metrics-list">
-            <div class="metric-item"><span>Availability (A)</span><b id="a-M2">0%</b></div>
-            <div class="metric-item"><span>Performance (P)</span><b id="p-M2">0%</b></div>
+            <div class="metric-item"><span>Avg Availability (A)</span><b id="a-M2">0%</b></div>
+            <div class="metric-item"><span>Avg Performance (P)</span><b id="p-M2">0%</b></div>
             <div class="metric-item"><span>Quality (Q)</span><b id="q-M2">100%</b></div>
           </div>
         </div>
@@ -519,14 +215,12 @@
           </div>
           <div class="oee-display">
             <div class="oee-val" id="oee-M3">0%</div>
-            <div class="oee-label">OEE Efficiency</div>
+            <div class="oee-label">Average OEE</div>
           </div>
-          <div class="output-box">
-            📦 ผลิตจริง/เป้าหมาย: <b id="pcs-M3">0 / 0</b> ชิ้น
-          </div>
+          <div class="output-box">📦 ผลิตจริง/เป้าหมาย: <b id="pcs-M3">0 / 0</b> ชิ้น</div>
           <div class="metrics-list">
-            <div class="metric-item"><span>Availability (A)</span><b id="a-M3">0%</b></div>
-            <div class="metric-item"><span>Performance (P)</span><b id="p-M3">0%</b></div>
+            <div class="metric-item"><span>Avg Availability (A)</span><b id="a-M3">0%</b></div>
+            <div class="metric-item"><span>Avg Performance (P)</span><b id="p-M3">0%</b></div>
             <div class="metric-item"><span>Quality (Q)</span><b id="q-M3">100%</b></div>
           </div>
         </div>
@@ -545,14 +239,12 @@
           </div>
           <div class="oee-display">
             <div class="oee-val" id="oee-M4">0%</div>
-            <div class="oee-label">OEE Efficiency</div>
+            <div class="oee-label">Average OEE</div>
           </div>
-          <div class="output-box">
-            📦 ผลิตจริง/เป้าหมาย: <b id="pcs-M4">0 / 0</b> ชิ้น
-          </div>
+          <div class="output-box">📦 ผลิตจริง/เป้าหมาย: <b id="pcs-M4">0 / 0</b> ชิ้น</div>
           <div class="metrics-list">
-            <div class="metric-item"><span>Availability (A)</span><b id="a-M4">0%</b></div>
-            <div class="metric-item"><span>Performance (P)</span><b id="p-M4">0%</b></div>
+            <div class="metric-item"><span>Avg Availability (A)</span><b id="a-M4">0%</b></div>
+            <div class="metric-item"><span>Avg Performance (P)</span><b id="p-M4">0%</b></div>
             <div class="metric-item"><span>Quality (Q)</span><b id="q-M4">100%</b></div>
           </div>
         </div>
@@ -560,11 +252,19 @@
       </div>
     </div>
 
-    <!-- Multi-line Trend Chart Card -->
+    <!-- 📈 กราฟที่ 1 หน้าหลัก: Multi-line Cumulative OEE Trend Chart (สะสมย้อนหลัง) -->
     <div class="chart-card">
-      <h2>📈 แนวโน้ม OEE รายชั่วโมงการทำงาน (4 เครื่อง)</h2>
+      <h2>📈 แนวโน้ม OEE สะสมย้อนหลัง (4 เครื่อง)</h2>
       <div class="chart-container">
         <canvas id="oeeMultiLineChart"></canvas>
+      </div>
+    </div>
+
+    <!-- ⚡ กราฟที่ 2 หน้าหลัก: ประิทธิภาพเครื่อง ณ ชั่วโมงนั้นๆ (4 เครื่อง) -->
+    <div class="chart-card">
+      <h2>⚡ ประสิทธิภาพเครื่อง ณ ชั่วโมงนั้นๆ (4 เครื่อง)</h2>
+      <div class="chart-container">
+        <canvas id="oeeHourlyMultiLineChart"></canvas>
       </div>
     </div>
   </div>
@@ -578,20 +278,35 @@
         <h2 id="modalTitle" style="margin: 0;">รายละเอียด Machine</h2>
         <span id="modalStatusBanner" class="status-badge">STOP</span>
       </div>
-      <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 16px;">สถิติประสิทธิภาพและการบันทึกข้อมูล Real-time</p>
+      <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px;">สถิติประสิทธิผลเฉลี่ยรวมและรายละเอียด OEE ย้อนหลัง</p>
+
+      <!-- 🎛️ ช่องเลือกกรองช่วงชั่วโมง (เชื่อมทั้ง 2 กราฟ และทุกตารางใน Modal) -->
+      <div class="filter-box">
+        <span style="font-size: 0.85rem; font-weight: 700;">⏱️ กรองช่วงชั่วโมงที่ต้องการดู (Modal):</span>
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <label style="font-size: 0.8rem; color: var(--text-muted);">เริ่ม:</label>
+          <input type="number" id="filterStartHour" class="filter-input" min="1" placeholder="1">
+        </div>
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <label style="font-size: 0.8rem; color: var(--text-muted);">ถึง:</label>
+          <input type="number" id="filterEndHour" class="filter-input" min="1" placeholder="60">
+        </div>
+        <button onclick="applyHourFilter()" class="btn-filter">🔍 กรองข้อมูล</button>
+        <button onclick="resetHourFilter()" class="btn-filter-reset">🔄 แสดงทั้งหมด</button>
+      </div>
 
       <!-- 4 OEE KPI Mini Cards -->
       <div class="kpi-grid">
         <div class="kpi-card" style="border-top: 3px solid #3b82f6;">
-          <div class="kpi-title">Overall OEE</div>
+          <div class="kpi-title">Average OEE</div>
           <div class="kpi-value" id="kpiOee" style="color: #38bdf8;">0%</div>
         </div>
         <div class="kpi-card" style="border-top: 3px solid #10b981;">
-          <div class="kpi-title">Availability (A)</div>
+          <div class="kpi-title">Avg Availability (A)</div>
           <div class="kpi-value" id="kpiA">0%</div>
         </div>
         <div class="kpi-card" style="border-top: 3px solid #f59e0b;">
-          <div class="kpi-title">Performance (P)</div>
+          <div class="kpi-title">Avg Performance (P)</div>
           <div class="kpi-value" id="kpiP">0%</div>
         </div>
         <div class="kpi-card" style="border-top: 3px solid #8b5cf6;">
@@ -600,7 +315,7 @@
         </div>
       </div>
 
-      <!-- 📊 ✨ [ส่วนเพิ่มใหม่] สรุปจำนวนครั้งของสถานะ (Event Frequency Summary) -->
+      <!-- 📊 สรุปจำนวนครั้งของสถานะ (Event Frequency Summary) -->
       <h3 style="font-size: 0.95rem; margin-top: 18px; margin-bottom: 8px;">📊 สรุปจำนวนครั้งของสถานะ (Event Frequency)</h3>
       <div class="kpi-grid">
         <div class="kpi-card" style="border-left: 3px solid #10b981; text-align: left; padding: 12px 14px;">
@@ -625,14 +340,20 @@
         📦 <b>ชิ้นงานผลิตจริงสะสม:</b> <span id="modalActualPcs" style="color: var(--text-main); font-weight: 700;">0</span> ชิ้น / <b>เป้าหมายสะสม:</b> <span id="modalTargetPcs" style="color: var(--text-main); font-weight: 700;">0</span> ชิ้น
       </div>
 
-      <!-- Single Machine Line Chart -->
-      <h3 style="font-size: 1rem; margin-bottom: 8px;">📈 กราฟแนวโน้ม OEE รายชั่วโมง (เครื่องนี้)</h3>
+      <!-- 📈 กราฟที่ 1 ใน Modal: Cumulative OEE Trend Chart -->
+      <h3 style="font-size: 0.95rem; margin-top: 18px; margin-bottom: 8px;">📈 1. กราฟแนวโน้ม OEE สะสมย้อนหลัง (Cumulative OEE Trend)</h3>
       <div class="modal-chart-box">
-        <canvas id="singleMachineChart"></canvas>
+        <canvas id="singleMachineChartCumulative"></canvas>
       </div>
 
-      <!-- Log History Table with A, P, Q Columns -->
-      <h3 style="font-size: 1rem; margin-bottom: 8px;">📋 ประวัติการบันทึกเหตุการณ์ย้อนหลัง</h3>
+      <!-- ⚡ กราฟที่ 2 ใน Modal: ประสิทธิภาพเครื่อง ณ ชั่วโมงนั้นๆ -->
+      <h3 style="font-size: 0.95rem; margin-top: 18px; margin-bottom: 8px;">⚡ 2. ประสิทธิภาพเครื่อง ณ ชั่วโมงนั้นๆ</h3>
+      <div class="modal-chart-box">
+        <canvas id="singleMachineChartHourly"></canvas>
+      </div>
+
+      <!-- Log History Table -->
+      <h3 style="font-size: 1rem; margin-bottom: 8px;">📋 ประวัติ OEE แต่ละชั่วโมงย้อนหลัง</h3>
       <div class="log-table-container">
         <table class="log-table">
           <thead>
@@ -640,15 +361,16 @@
               <th>ชั่วโมงที่</th>
               <th>เวลาบันทึก</th>
               <th>ปุ่มที่กด</th>
-              <th>สถานะ (Event)</th>
-              <th>เป้าหมายชิ้นงาน</th>
+              <th>สถานะ</th>
+              <th>ชิ้นงานผลิตจริง</th>
               <th>A (%)</th>
               <th>P (%)</th>
               <th>Q (%)</th>
+              <th>OEE (%)</th>
             </tr>
           </thead>
           <tbody id="logTableBody">
-            <tr><td colspan="8">ไม่มีข้อมูลประวัติ</td></tr>
+            <tr><td colspan="9">ไม่มีข้อมูลประวัติ</td></tr>
           </tbody>
         </table>
       </div>
@@ -660,20 +382,24 @@
     import { calculateOEE } from './js/oee-engine.js';
 
     const machines = ['M1', 'M2', 'M3', 'M4'];
-    const machineColors = {
-      'M1': '#10b981',
-      'M2': '#06b6d4',
-      'M3': '#8b5cf6',
-      'M4': '#ec4899'
-    };
+    const machineColors = { 'M1': '#10b981', 'M2': '#06b6d4', 'M3': '#8b5cf6', 'M4': '#ec4899' };
     
     let globalData = {};
     let activeModalMachineId = null;
-    let singleChartInstance = null;
+    let singleCumulativeChartInstance = null;
+    let singleHourlyChartInstance = null;
 
-    // --- 📈 Multi-line Chart Setup ---
-    const ctx = document.getElementById('oeeMultiLineChart').getContext('2d');
-    const oeeMultiLineChart = new Chart(ctx, {
+    // ตัวแปรกรองช่วงชั่วโมง (สำหรับ Pop-up Modal)
+    let currentStartHour = null;
+    let currentEndHour = null;
+
+    // ตัวแปรกรองช่วงชั่วโมง (สำหรับหน้าหลัก)
+    let mainStartHour = null;
+    let mainEndHour = null;
+
+    // --- 📈 1. กราฟหน้าหลัก: Multi-line Cumulative OEE Trend Chart (สะสมย้อนหลัง) ---
+    const ctxCum = document.getElementById('oeeMultiLineChart').getContext('2d');
+    const oeeMultiLineChart = new Chart(ctxCum, {
       type: 'line',
       data: {
         labels: [],
@@ -688,22 +414,181 @@
         responsive: true,
         maintainAspectRatio: false,
         scales: {
-          x: { 
-            grid: { color: 'rgba(255, 255, 255, 0.05)' },
-            title: { display: true, text: 'ระยะเวลาทำงาน (ชั่วโมง)', font: { weight: 'bold' } } 
-          },
-          y: { 
-            beginAtZero: true, 
-            max: 100, 
-            grid: { color: 'rgba(255, 255, 255, 0.05)' },
-            title: { display: true, text: 'OEE (%)', font: { weight: 'bold' } } 
-          }
+          x: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, title: { display: true, text: 'ลำดับประวัติการบันทึกข้อมูล (ครั้ง)', font: { weight: 'bold' } } },
+          y: { beginAtZero: true, max: 100, grid: { color: 'rgba(255, 255, 255, 0.05)' }, title: { display: true, text: 'OEE สะสม (%)', font: { weight: 'bold' } } }
         },
         plugins: { legend: { display: true, position: 'top' } }
       }
     });
 
-    // --- 🔄 Real-time Modal Updater ---
+    // --- ⚡ 2. กราฟหน้าหลัก: ประสิทธิภาพเครื่อง ณ ชั่วโมงนั้นๆ (4 เครื่อง) ---
+    const ctxHourly = document.getElementById('oeeHourlyMultiLineChart').getContext('2d');
+    const oeeHourlyMultiLineChart = new Chart(ctxHourly, {
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: [
+          { label: 'Machine 1 (M1)', data: [], borderColor: '#10b981', backgroundColor: '#10b981', borderWidth: 2, fill: false, tension: 0.2 },
+          { label: 'Machine 2 (M2)', data: [], borderColor: '#06b6d4', backgroundColor: '#06b6d4', borderWidth: 2, fill: false, tension: 0.2 },
+          { label: 'Machine 3 (M3)', data: [], borderColor: '#8b5cf6', backgroundColor: '#8b5cf6', borderWidth: 2, fill: false, tension: 0.2 },
+          { label: 'Machine 4 (M4)', data: [], borderColor: '#ec4899', backgroundColor: '#ec4899', borderWidth: 2, fill: false, tension: 0.2 }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, title: { display: true, text: 'ชั่วโมงการทำงาน', font: { weight: 'bold' } } },
+          y: { beginAtZero: true, max: 100, grid: { color: 'rgba(255, 255, 255, 0.05)' }, title: { display: true, text: 'ประสิทธิภาพ (%)', font: { weight: 'bold' } } }
+        },
+        plugins: { legend: { display: true, position: 'top' } }
+      }
+    });
+
+    // 🎯 ฟังก์ชันกรองช่วงชั่วโมงสำหรับหน้าหลัก (เชื่อมโยงทั้งการ์ดและกราฟทั้ง 2)
+    window.applyMainHourFilter = function() {
+      const s = parseInt(document.getElementById('mainFilterStartHour').value);
+      const e = parseInt(document.getElementById('mainFilterEndHour').value);
+
+      if (isNaN(s) || isNaN(e)) {
+        alert('กรุณากรอกตัวเลขชั่วโมงเริ่มต้นและสิ้นสุดให้ถูกต้องครับ');
+        return;
+      }
+      if (s > e) {
+        alert('ชั่วโมงเริ่มต้นต้องไม่มากกว่าชั่วโมงสิ้นสุดครับ');
+        return;
+      }
+
+      mainStartHour = s;
+      mainEndHour = e;
+      renderMainDashboard();
+    };
+
+    window.resetMainHourFilter = function() {
+      document.getElementById('mainFilterStartHour').value = '';
+      document.getElementById('mainFilterEndHour').value = '';
+      mainStartHour = null;
+      mainEndHour = null;
+      renderMainDashboard();
+    };
+
+    // 🔄 ฟังก์ชันประมวลผลอัปเดตหน้า Dashboard หลักทั้งหมด
+    function renderMainDashboard() {
+      let maxCumLogsCount = 0;
+      let maxHourlyIndex = 0;
+
+      machines.forEach((mId, index) => {
+        const rawLogsObj = globalData[mId] || {};
+        const logsArray = Object.values(rawLogsObj).sort((a, b) => a.timestamp - b.timestamp);
+        const currentMetrics = calculateOEE(logsArray, mId);
+
+        // ดึง hourlyLogs ทั้งหมด
+        let hLogs = currentMetrics.hourlyLogs || [];
+
+        // ถ้ามีการเลือกกรองช่วงชั่วโมงบนหน้าหลัก
+        if (mainStartHour !== null && mainEndHour !== null) {
+          hLogs = hLogs.filter(l => l.hourIndex >= mainStartHour && l.hourIndex <= mainEndHour);
+        }
+
+        // 1. คำนวณ KPI การ์ดหลักตามช่วงชั่วโมงที่ถูกกรอง
+        let runHours = 0, sumPerfP = 0, totalActualPcs = 0;
+        hLogs.forEach(l => {
+          if (l.eventType === 'RUNNING') {
+            runHours++;
+            sumPerfP += l.perfRate;
+          }
+          totalActualPcs += l.actualPcs;
+        });
+
+        const totalFilteredHours = hLogs.length;
+        const avgA = totalFilteredHours > 0 ? Number(((runHours / totalFilteredHours) * 100).toFixed(1)) : 0;
+        const avgP = runHours > 0 ? Number((sumPerfP / runHours).toFixed(1)) : 0;
+        const avgQ = 100;
+        const avgOee = Number(((avgA / 100) * (avgP / 100) * (avgQ / 100) * 100).toFixed(1));
+        const targetPcs = totalFilteredHours * currentMetrics.idealCapacity;
+
+        // อัปเดตตัวเลขในการ์ดหลัก
+        document.getElementById(`oee-${mId}`).innerText = `${avgOee}%`;
+        document.getElementById(`pcs-${mId}`).innerText = `${totalActualPcs} / ${targetPcs}`;
+        document.getElementById(`a-${mId}`).innerText = `${avgA}%`;
+        document.getElementById(`p-${mId}`).innerText = `${avgP}%`;
+        document.getElementById(`q-${mId}`).innerText = `${avgQ}%`;
+
+        // 2. อัปเดตกราฟที่ 1 (สะสมย้อนหลัง) เฉพาะช่วงที่เลือก
+        const cumSeries = [];
+        let runningCount = 0, runningSumPerf = 0;
+        hLogs.forEach((l, idx) => {
+          if (l.eventType === 'RUNNING') {
+            runningCount++;
+            runningSumPerf += l.perfRate;
+          }
+          const curH = idx + 1;
+          const cA = (runningCount / curH) * 100;
+          const cP = runningCount > 0 ? (runningSumPerf / runningCount) : 0;
+          const cOee = Number(((cA / 100) * (cP / 100) * 100).toFixed(1));
+          cumSeries.push(cOee);
+        });
+
+        oeeMultiLineChart.data.datasets[index].data = cumSeries;
+        if (hLogs.length > maxCumLogsCount) maxCumLogsCount = hLogs.length;
+
+        // 3. อัปเดตกราฟที่ 2 (ประสิทธิภาพเครื่อง ณ ชั่วโมงนั้นๆ) เฉพาะช่วงที่เลือก
+        const hourlySeries = hLogs.map(l => l.oee);
+        oeeHourlyMultiLineChart.data.datasets[index].data = hourlySeries;
+
+        hLogs.forEach(l => {
+          if (l.hourIndex > maxHourlyIndex) maxHourlyIndex = l.hourIndex;
+        });
+
+        // อัปเดตสถานะเครื่อง
+        const statusEl = document.getElementById(`status-${mId}`);
+        statusEl.innerText = currentMetrics.status;
+        if (currentMetrics.status === 'RUNNING') {
+          statusEl.style.background = 'rgba(16, 185, 129, 0.15)'; statusEl.style.color = '#10b981';
+        } else if (currentMetrics.status === 'SETUP') {
+          statusEl.style.background = 'rgba(245, 158, 11, 0.15)'; statusEl.style.color = '#f59e0b';
+        } else if (currentMetrics.status === 'BREAKDOWN') {
+          statusEl.style.background = 'rgba(239, 68, 68, 0.15)'; statusEl.style.color = '#ef4444';
+        } else {
+          statusEl.style.background = 'rgba(148, 163, 184, 0.15)'; statusEl.style.color = '#94a3b8';
+        }
+      });
+
+      // อัปเดต Labels กราฟที่ 1
+      const cumLabels = [];
+      if (mainStartHour !== null && mainEndHour !== null) {
+        for (let h = mainStartHour; h <= mainEndHour; h++) {
+          cumLabels.push(`ชั่วโมงที่ ${h}`);
+        }
+      } else {
+        for (let h = 1; h <= Math.max(maxCumLogsCount, 1); h++) {
+          cumLabels.push(`ครั้งที่ ${h}`);
+        }
+      }
+      oeeMultiLineChart.data.labels = cumLabels;
+      oeeMultiLineChart.update();
+
+      // อัปเดต Labels กราฟที่ 2
+      const hourlyLabels = [];
+      if (mainStartHour !== null && mainEndHour !== null) {
+        for (let h = mainStartHour; h <= mainEndHour; h++) {
+          hourlyLabels.push(`ชั่วโมงที่ ${h}`);
+        }
+      } else {
+        for (let h = 1; h <= Math.max(maxHourlyIndex, 1); h++) {
+          hourlyLabels.push(`ชั่วโมงที่ ${h}`);
+        }
+      }
+      oeeHourlyMultiLineChart.data.labels = hourlyLabels;
+      oeeHourlyMultiLineChart.update();
+
+      // ถ้า Modal กำลังเปิดอยู่ ให้อัปเดตข้อมูลด้วย
+      if (activeModalMachineId) {
+        updateModalContent(activeModalMachineId);
+      }
+    }
+
+    // --- 🪟 อัปเดต Pop-up Modal รายเครื่อง ---
     function updateModalContent(mId) {
       if (!mId) return;
 
@@ -716,75 +601,95 @@
       const statusBanner = document.getElementById('modalStatusBanner');
       statusBanner.innerText = metrics.status;
       if (metrics.status === 'RUNNING') {
-        statusBanner.style.background = 'rgba(16, 185, 129, 0.15)';
-        statusBanner.style.color = '#10b981';
+        statusBanner.style.background = 'rgba(16, 185, 129, 0.15)'; statusBanner.style.color = '#10b981';
       } else if (metrics.status === 'SETUP') {
-        statusBanner.style.background = 'rgba(245, 158, 11, 0.15)';
-        statusBanner.style.color = '#f59e0b';
+        statusBanner.style.background = 'rgba(245, 158, 11, 0.15)'; statusBanner.style.color = '#f59e0b';
       } else if (metrics.status === 'BREAKDOWN') {
-        statusBanner.style.background = 'rgba(239, 68, 68, 0.15)';
-        statusBanner.style.color = '#ef4444';
+        statusBanner.style.background = 'rgba(239, 68, 68, 0.15)'; statusBanner.style.color = '#ef4444';
       } else {
-        statusBanner.style.background = 'rgba(148, 163, 184, 0.15)';
-        statusBanner.style.color = '#94a3b8';
+        statusBanner.style.background = 'rgba(148, 163, 184, 0.15)'; statusBanner.style.color = '#94a3b8';
       }
 
-      // Update Overall Metrics
-      document.getElementById('kpiOee').innerText = `${metrics.oee}%`;
-      document.getElementById('kpiA').innerText = `${metrics.availability}%`;
-      document.getElementById('kpiP').innerText = `${metrics.performance}%`;
-      document.getElementById('kpiQ').innerText = `${metrics.quality}%`;
+      let displayLogs = metrics.hourlyLogs || [];
+      if (currentStartHour !== null && currentEndHour !== null) {
+        displayLogs = displayLogs.filter(l => l.hourIndex >= currentStartHour && l.hourIndex <= currentEndHour);
+      }
 
-      // ✨ [คำนวณสรุปจำนวนครั้งของแต่ละสถานะ]
-      let cRunning = 0;
-      let cSetup = 0;
-      let cBreakdown = 0;
+      let runHours = 0, sumPerfP = 0, totalPcs = 0;
+      let cRunning = 0, cSetup = 0, cBreakdown = 0;
 
-      logsArray.forEach(log => {
-        if (log.eventType === 'RUNNING') cRunning++;
-        else if (log.eventType === 'SETUP') cSetup++;
-        else if (log.eventType === 'BREAKDOWN') cBreakdown++;
+      displayLogs.forEach(l => {
+        if (l.eventType === 'RUNNING') {
+          runHours++;
+          sumPerfP += l.perfRate;
+          cRunning++;
+        } else if (l.eventType === 'SETUP') {
+          cSetup++;
+        } else if (l.eventType === 'BREAKDOWN') {
+          cBreakdown++;
+        }
+        totalPcs += l.actualPcs;
       });
+
+      const filterTotalHours = displayLogs.length;
+      const avgA = filterTotalHours > 0 ? Number(((runHours / filterTotalHours) * 100).toFixed(1)) : 0;
+      const avgP = runHours > 0 ? Number((sumPerfP / runHours).toFixed(1)) : 0;
+      const avgQ = 100;
+      const avgOee = Number(((avgA / 100) * (avgP / 100) * (avgQ / 100) * 100).toFixed(1));
+
+      document.getElementById('kpiOee').innerText = `${avgOee}%`;
+      document.getElementById('kpiA').innerText = `${avgA}%`;
+      document.getElementById('kpiP').innerText = `${avgP}%`;
+      document.getElementById('kpiQ').innerText = `${avgQ}%`;
 
       document.getElementById('countRunning').innerText = `${cRunning} ครั้ง`;
       document.getElementById('countSetup').innerText = `${cSetup} ครั้ง`;
       document.getElementById('countBreakdown').innerText = `${cBreakdown} ครั้ง`;
-      document.getElementById('countTotal').innerText = `${logsArray.length} ครั้ง`;
+      document.getElementById('countTotal').innerText = `${filterTotalHours} ครั้ง`;
 
-      document.getElementById('modalActualPcs').innerText = metrics.totalActualOutput;
-      document.getElementById('modalTargetPcs').innerText = metrics.totalTargetOutput;
+      document.getElementById('modalActualPcs').innerText = totalPcs;
+      document.getElementById('modalTargetPcs').innerText = filterTotalHours * metrics.idealCapacity;
 
-      // Calculate historical A, P, Q at each logged hour
-      const singleOeeHistory = [];
-      const singleLabels = [];
-      for (let i = 1; i <= logsArray.length; i++) {
-        const subLogs = logsArray.slice(0, i);
-        const subMetrics = calculateOEE(subLogs, mId);
-        singleOeeHistory.push(subMetrics.oee);
-        singleLabels.push(`ชม. ${i}`);
-      }
+      // 1. กราฟสะสม Modal
+      const cumOeeSeries = [];
+      const cumLabels = [];
+      let cumRunning = 0, cumSumP = 0;
 
-      if (singleChartInstance) {
-        singleChartInstance.data.labels = singleLabels.length > 0 ? singleLabels : ['ไม่มีข้อมูล'];
-        singleChartInstance.data.datasets[0].data = singleOeeHistory.length > 0 ? singleOeeHistory : [0];
-        singleChartInstance.update();
+      displayLogs.forEach((l, idx) => {
+        if (l.eventType === 'RUNNING') {
+          cumRunning++;
+          cumSumP += l.perfRate;
+        }
+        const curTotal = idx + 1;
+        const subA = (cumRunning / curTotal) * 100;
+        const subP = cumRunning > 0 ? (cumSumP / cumRunning) : 0;
+        const subOee = Number(((subA / 100) * (subP / 100) * 100).toFixed(1));
+        
+        cumOeeSeries.push(subOee);
+        cumLabels.push(`ชั่วโมงที่ ${l.hourIndex}`);
+      });
+
+      if (singleCumulativeChartInstance) {
+        singleCumulativeChartInstance.data.labels = cumLabels.length > 0 ? cumLabels : ['ไม่มีข้อมูล'];
+        singleCumulativeChartInstance.data.datasets[0].data = cumOeeSeries.length > 0 ? cumOeeSeries : [0];
+        singleCumulativeChartInstance.update();
       } else {
-        const singleCtx = document.getElementById('singleMachineChart').getContext('2d');
+        const cumCtx = document.getElementById('singleMachineChartCumulative').getContext('2d');
         const currentColor = machineColors[mId] || '#3b82f6';
         
-        singleChartInstance = new Chart(singleCtx, {
+        singleCumulativeChartInstance = new Chart(cumCtx, {
           type: 'line',
           data: {
-            labels: singleLabels.length > 0 ? singleLabels : ['ไม่มีข้อมูล'],
+            labels: cumLabels.length > 0 ? cumLabels : ['ไม่มีข้อมูล'],
             datasets: [{
-              label: `OEE ${mId} (%)`,
-              data: singleOeeHistory.length > 0 ? singleOeeHistory : [0],
+              label: `OEE สะสมย้อนหลัง ${mId} (%)`,
+              data: cumOeeSeries.length > 0 ? cumOeeSeries : [0],
               borderColor: currentColor,
               backgroundColor: currentColor + '22',
               borderWidth: 3,
               fill: true,
               tension: 0.3,
-              pointRadius: 5
+              pointRadius: 3
             }]
           },
           options: {
@@ -799,31 +704,66 @@
         });
       }
 
-      // Render Table Rows
-      const tbody = document.getElementById('logTableBody');
-      if (logsArray.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="8" style="padding: 20px;">ยังไม่มีประวัติการกดบันทึกข้อมูล</td></tr>';
+      // 2. กราฟประสิทธิภาพ ณ ชั่วโมงนั้นๆ Modal
+      const hourlyOeeSeries = displayLogs.map(l => l.oee);
+      const hourlyLabels = displayLogs.map(l => `ชั่วโมงที่ ${l.hourIndex}`);
+
+      if (singleHourlyChartInstance) {
+        singleHourlyChartInstance.data.labels = hourlyLabels.length > 0 ? hourlyLabels : ['ไม่มีข้อมูล'];
+        singleHourlyChartInstance.data.datasets[0].data = hourlyOeeSeries.length > 0 ? hourlyOeeSeries : [0];
+        singleHourlyChartInstance.update();
       } else {
-        const logRows = logsArray.map((log, idx) => {
-          const subLogs = logsArray.slice(0, idx + 1);
-          const subMetrics = calculateOEE(subLogs, mId);
+        const hourlyCtx = document.getElementById('singleMachineChartHourly').getContext('2d');
+        
+        singleHourlyChartInstance = new Chart(hourlyCtx, {
+          type: 'line',
+          data: {
+            labels: hourlyLabels.length > 0 ? hourlyLabels : ['ไม่มีข้อมูล'],
+            datasets: [{
+              label: `ประสิทธิภาพ ณ ชั่วโมงนั้นๆ ${mId} (%)`,
+              data: hourlyOeeSeries.length > 0 ? hourlyOeeSeries : [0],
+              borderColor: '#38bdf8',
+              backgroundColor: 'rgba(56, 189, 248, 0.15)',
+              borderWidth: 2,
+              fill: true,
+              tension: 0.2,
+              pointRadius: 4
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              x: { grid: { color: 'rgba(255, 255, 255, 0.05)' } },
+              y: { beginAtZero: true, max: 100, grid: { color: 'rgba(255, 255, 255, 0.05)' } }
+            },
+            plugins: { legend: { display: false } }
+          }
+        });
+      }
+
+      // 3. ตารางประวัติ Modal
+      const tbody = document.getElementById('logTableBody');
+      if (displayLogs.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="9" style="padding: 20px;">ไม่พบข้อมูลประวัติในช่วงชั่วโมงที่เลือก</td></tr>';
+      } else {
+        const logRows = displayLogs.map((log) => {
           const timeStr = new Date(log.timestamp).toLocaleTimeString('th-TH');
-          const hourlyTarget = log.eventType === 'RUNNING' ? Math.round(metrics.idealCapacity * (log.perfRate / 100)) : 0;
-          
           let tagClass = 'tag-setup';
           if (log.eventType === 'RUNNING') tagClass = 'tag-running';
           else if (log.eventType === 'BREAKDOWN') tagClass = 'tag-breakdown';
 
           return `
             <tr>
-              <td><b>ชั่วโมงที่ ${idx + 1}</b></td>
+              <td><b>ชั่วโมงที่ ${log.hourIndex}</b></td>
               <td>${timeStr}</td>
-              <td><b>ปุ่ม ${log.keyPressed || '-'}</b></td>
+              <td><b>ปุ่ม ${log.keyPressed}</b></td>
               <td><span class="event-tag ${tagClass}">${log.eventType}</span></td>
-              <td>${hourlyTarget} ชิ้น (${log.perfRate || 0}%)</td>
-              <td><b style="color: #10b981;">${subMetrics.availability}%</b></td>
-              <td><b style="color: #f59e0b;">${subMetrics.performance}%</b></td>
-              <td><b style="color: #8b5cf6;">${subMetrics.quality}%</b></td>
+              <td>${log.actualPcs} / ${log.targetPcs} ชิ้น</td>
+              <td><b style="color: #10b981;">${log.a}%</b></td>
+              <td><b style="color: #f59e0b;">${log.p}%</b></td>
+              <td><b style="color: #8b5cf6;">${log.q}%</b></td>
+              <td><b style="color: #38bdf8;">${log.oee}%</b></td>
             </tr>
           `;
         });
@@ -832,13 +772,43 @@
       }
     }
 
-    // --- 🪟 Open Modal ---
+    // 🎯 ฟังก์ชันกรองช่วงชั่วโมงสำหรับ Pop-up Modal
+    window.applyHourFilter = function() {
+      const startVal = parseInt(document.getElementById('filterStartHour').value);
+      const endVal = parseInt(document.getElementById('filterEndHour').value);
+
+      if (isNaN(startVal) || isNaN(endVal)) {
+        alert('กรุณากรอกตัวเลขชั่วโมงเริ่มต้นและสิ้นสุดให้ถูกต้องครับ');
+        return;
+      }
+      if (startVal > endVal) {
+        alert('ชั่วโมงเริ่มต้นต้องไม่มากกว่าชั่วโมงสิ้นสุดครับ');
+        return;
+      }
+
+      currentStartHour = startVal;
+      currentEndHour = endVal;
+      updateModalContent(activeModalMachineId);
+    };
+
+    window.resetHourFilter = function() {
+      document.getElementById('filterStartHour').value = '';
+      document.getElementById('filterEndHour').value = '';
+      currentStartHour = null;
+      currentEndHour = null;
+      updateModalContent(activeModalMachineId);
+    };
+
     window.openMachineDetails = function(mId) {
       activeModalMachineId = mId;
-      if (singleChartInstance) {
-        singleChartInstance.destroy();
-        singleChartInstance = null;
-      }
+      currentStartHour = mainStartHour; // ดึงช่วงจากหน้าหลักมาใช้ล่วงหน้าถ้ามีการกรองไว้
+      currentEndHour = mainEndHour;
+      document.getElementById('filterStartHour').value = mainStartHour || '';
+      document.getElementById('filterEndHour').value = mainEndHour || '';
+
+      if (singleCumulativeChartInstance) { singleCumulativeChartInstance.destroy(); singleCumulativeChartInstance = null; }
+      if (singleHourlyChartInstance) { singleHourlyChartInstance.destroy(); singleHourlyChartInstance = null; }
+
       updateModalContent(mId);
       document.getElementById('detailsModal').style.display = 'block';
     };
@@ -856,7 +826,6 @@
       }
     };
 
-    // --- 🗑️ Reset Data ---
     window.resetAllData = function() {
       if (confirm('คุณแน่ใจหรือไม่ว่าต้องการรีเซ็ตข้อมูลเครื่องจักรทั้งหมด?')) {
         const logsRef = ref(db, 'logs');
@@ -866,67 +835,13 @@
       }
     };
 
-    // --- 🔄 Real-time Listener from Firebase ---
+    // 🔄 Real-time Listener จาก Firebase
     const logsRef = ref(db, 'logs');
     onValue(logsRef, (snapshot) => {
       globalData = snapshot.val() || {};
-      let maxHoursCount = 0;
-
-      machines.forEach((mId, index) => {
-        const rawLogsObj = globalData[mId] || {};
-        const logsArray = Object.values(rawLogsObj).sort((a, b) => a.timestamp - b.timestamp);
-
-        const oeeHistory = [];
-        for (let i = 1; i <= logsArray.length; i++) {
-          const subLogs = logsArray.slice(0, i);
-          const subMetrics = calculateOEE(subLogs, mId);
-          oeeHistory.push(subMetrics.oee);
-        }
-
-        oeeMultiLineChart.data.datasets[index].data = oeeHistory;
-
-        if (logsArray.length > maxHoursCount) {
-          maxHoursCount = logsArray.length;
-        }
-
-        const currentMetrics = calculateOEE(logsArray, mId);
-        const statusEl = document.getElementById(`status-${mId}`);
-        statusEl.innerText = currentMetrics.status;
-        
-        if (currentMetrics.status === 'RUNNING') {
-          statusEl.style.background = 'rgba(16, 185, 129, 0.15)';
-          statusEl.style.color = '#10b981';
-        } else if (currentMetrics.status === 'SETUP') {
-          statusEl.style.background = 'rgba(245, 158, 11, 0.15)';
-          statusEl.style.color = '#f59e0b';
-        } else if (currentMetrics.status === 'BREAKDOWN') {
-          statusEl.style.background = 'rgba(239, 68, 68, 0.15)';
-          statusEl.style.color = '#ef4444';
-        } else {
-          statusEl.style.background = 'rgba(148, 163, 184, 0.15)';
-          statusEl.style.color = '#94a3b8';
-        }
-
-        document.getElementById(`oee-${mId}`).innerText = `${currentMetrics.oee}%`;
-        document.getElementById(`pcs-${mId}`).innerText = `${currentMetrics.totalActualOutput} / ${currentMetrics.totalTargetOutput}`;
-        document.getElementById(`a-${mId}`).innerText = `${currentMetrics.availability}%`;
-        document.getElementById(`p-${mId}`).innerText = `${currentMetrics.performance}%`;
-        document.getElementById(`q-${mId}`).innerText = `${currentMetrics.quality}%`;
-      });
-
-      const labels = [];
-      for (let h = 1; h <= Math.max(maxHoursCount, 1); h++) {
-        labels.push(`ชั่วโมงที่ ${h}`);
-      }
-      oeeMultiLineChart.data.labels = labels;
-      oeeMultiLineChart.update();
-
-      if (activeModalMachineId) {
-        updateModalContent(activeModalMachineId);
-      }
+      renderMainDashboard();
     });
 
-    // --- 🌗 Theme Switcher Logic ---
     window.toggleTheme = function() {
       const htmlEl = document.documentElement;
       const currentTheme = htmlEl.getAttribute('data-theme');
@@ -940,13 +855,8 @@
     function updateThemeUI(theme) {
       const icon = document.getElementById('themeIcon');
       const text = document.getElementById('themeText');
-      if (theme === 'dark') {
-        icon.innerText = '☀️';
-        text.innerText = 'Light Mode';
-      } else {
-        icon.innerText = '🌙';
-        text.innerText = 'Dark Mode';
-      }
+      if (theme === 'dark') { icon.innerText = '☀'; text.innerText = 'Light Mode'; }
+      else { icon.innerText = '🌙'; text.innerText = 'Dark Mode'; }
     }
 
     const savedTheme = localStorage.getItem('pu_theme') || 'dark';

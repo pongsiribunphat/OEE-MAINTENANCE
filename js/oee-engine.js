@@ -5,13 +5,13 @@
  */
 const MACHINE_IDEAL_CAPACITY = {
   'M1': 200, // 200 ชิ้น/ชม.
-  'M2': 180, // 180 ชิ้น/ชม. (200 * 0.9)
-  'M3': 160, // 160 ชิ้น/ชม. (200 * 0.8)
-  'M4': 140  // 140 ชิ้น/ชม. (200 * 0.7)
+  'M2': 180, // 180 ชิ้น/ชม.
+  'M3': 160, // 160 ชิ้น/ชม.
+  'M4': 140  // 140 ชิ้น/ชม.
 };
 
 /**
- * คำนวณ OEE ตามหลักวิชาการสากล (Output Target-based Performance)
+ * คำนวณ OEE, A, P, Q เฉลี่ยสะสมรวม และสร้างข้อมูล OEE แยกรายชั่วโมง
  */
 export function calculateOEE(logs, machineId = 'M1') {
   const idealRate = MACHINE_IDEAL_CAPACITY[machineId] || 200;
@@ -25,7 +25,9 @@ export function calculateOEE(logs, machineId = 'M1') {
       status: 'STOP', 
       currentKey: '-',
       totalActualOutput: 0,
-      totalIdealTarget: 0
+      totalTargetOutput: 0,
+      idealCapacity: idealRate,
+      hourlyLogs: []
     };
   }
 
@@ -33,57 +35,65 @@ export function calculateOEE(logs, machineId = 'M1') {
   const sortedLogs = [...logs].sort((a, b) => a.timestamp - b.timestamp);
   const latestLog = sortedLogs[sortedLogs.length - 1];
 
-  let operatingHours = 0; // ชั่วโมง RUNNING
-  let plannedHours = 0;   // ชั่วโมงรวมทั้งหมด
-  let totalActualOutput = 0; // จำนวนชิ้นงานที่ผลิตได้จริงสะสม
-  let totalIdealTarget = 0;  // จำนวนชิ้นงานเป้าหมายสูงสุดสะสม (100% Ideal)
+  let operatingHours = 0;     // จำนวนครั้ง/ชั่วโมงที่เป็น RUNNING
+  let plannedHours = 0;       // จำนวนครั้ง/ชั่วโมงทั้งหมดที่บันทึก
+  let totalActualOutput = 0;   // ชิ้นงานที่ผลิตได้จริงสะสม
+  let sumPerfRunning = 0;     // ผลรวม % Load ตอน RUNNING
 
-  // วนลูปคำนวณผลผลิตรายชั่วโมง (1 กด = 1 ชั่วโมง)
-  sortedLogs.forEach(log => {
+  // ⏱️ วนลูปสร้างข้อมูล OEE แยกแต่ละชั่วโมง
+  const hourlyLogs = sortedLogs.map((log, index) => {
     plannedHours += 1;
+    let a = 0, p = 0, q = 100, hourlyOee = 0, actualPcs = 0;
 
     if (log.eventType === 'RUNNING') {
       operatingHours += 1;
+      const perf = log.perfRate || 0;
+      sumPerfRunning += perf;
       
-      // คำนวณชิ้นงานจริงที่ผลิตได้ตาม Load % จากปุ่มกด (2=60%, 3=70%, 4-6=80%)
-      const loadPercent = (log.perfRate || 0) / 100;
-      const actualProducedPcs = idealRate * loadPercent;
-      
-      totalIdealTarget += idealRate;     // เป้าหมายสูงสุดเต็ม 100%
-      totalActualOutput += actualProducedPcs; // ชิ้นงานที่ผลิตได้จริงตามกำลังโหลด
+      a = 100;
+      p = perf;
+      q = 100;
+      hourlyOee = perf; // OEE ของชั่วโมงนี้ = A(100%) * P(perf%) * Q(100%)
+      actualPcs = Math.round(idealRate * (perf / 100));
     } else {
       // SETUP หรือ BREAKDOWN
-      totalIdealTarget += 0;
-      totalActualOutput += 0;
+      a = 0; p = 0; q = 100; hourlyOee = 0; actualPcs = 0;
     }
+
+    totalActualOutput += actualPcs;
+
+    return {
+      hourIndex: index + 1,
+      timestamp: log.timestamp,
+      keyPressed: log.keyPressed || '-',
+      eventType: log.eventType,
+      perfRate: log.perfRate || 0,
+      a: a,
+      p: p,
+      q: q,
+      oee: hourlyOee, // ค่า OEE เฉพาะชั่วโมงนี้
+      actualPcs: actualPcs,
+      targetPcs: idealRate
+    };
   });
 
-  // 1. Availability (%) = (Operating Hours / Planned Hours) * 100
-  const availability = plannedHours > 0 ? (operatingHours / plannedHours) * 100 : 0;
-
-  // 2. Performance (%) = (ชิ้นงานผลิตได้จริงสะสม / ชิ้นงานเป้าหมายสูงสุดสะสม) * 100
-  let performance = 0;
-  if (latestLog.eventType === 'RUNNING') {
-    performance = totalIdealTarget > 0 ? (totalActualOutput / totalIdealTarget) * 100 : 0;
-  } else {
-    performance = 0; // ถ้าหยุดเครื่อง/เสีย P = 0%
-  }
-
-  // 3. Quality (%) = 100% เสมอตามโจทย์
-  const quality = 100;
-
-  // 4. OEE (%) = A * P * Q
-  const oee = (availability / 100) * (performance / 100) * (quality / 100) * 100;
+  // คำนวณค่าเฉลี่ยสะสมรวมสำหรับโชร์การ์ดหน้าหลัก
+  const averageA = plannedHours > 0 ? (operatingHours / plannedHours) * 100 : 0;
+  const averageP = operatingHours > 0 ? (sumPerfRunning / operatingHours) : 0;
+  const averageQ = 100;
+  const averageOEE = (averageA / 100) * (averageP / 100) * (averageQ / 100) * 100;
+  const totalPlannedTarget = plannedHours * idealRate;
 
   return {
-    availability: Number(availability.toFixed(1)),
-    performance: Number(performance.toFixed(1)),
-    quality: Number(quality.toFixed(1)),
-    oee: Number(oee.toFixed(1)),
-    status: latestLog.eventType,
-    currentKey: latestLog.keyPressed || '-',
+    availability: Number(averageA.toFixed(1)),
+    performance: Number(averageP.toFixed(1)),
+    quality: Number(averageQ.toFixed(1)),
+    oee: Number(averageOEE.toFixed(1)),
+    status: latestLog ? latestLog.eventType : 'STOP',
+    currentKey: latestLog ? (latestLog.keyPressed || '-') : '-',
     totalActualOutput: Math.round(totalActualOutput),
-    totalTargetOutput: Math.round(totalIdealTarget),
-    idealCapacity: idealRate
+    totalTargetOutput: Math.round(totalPlannedTarget),
+    idealCapacity: idealRate,
+    hourlyLogs: hourlyLogs // อาร์เรย์ข้อมูล OEE แยกรายชั่วโมง
   };
 }
